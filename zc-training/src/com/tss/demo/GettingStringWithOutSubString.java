@@ -5,6 +5,6 @@ import com.tss.util.*;
 public class GettingStringWithOutSubString {
 	
 	public static void main(String[] args) throws Exception {
-		System.out.println(StringUtil.withOutSubString("chinnabodicherla",3,9));
+		System.out.println(StringUtil.subStringWithOutBuiltInMethods("chinnabodicherla",3,9));
 	}
 }
