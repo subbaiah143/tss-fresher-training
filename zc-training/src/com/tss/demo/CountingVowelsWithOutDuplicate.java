@@ -5,6 +5,6 @@ import com.tss.util.*;
 public class CountingVowelsWithOutDuplicate {
 	
 	public static void main(String[] args) throws Exception {
-		System.out.println(StringUtil.countVowelsWithOutDuplicate("chinna bodicherla"));
+		System.out.println(StringUtil.countVowelsWithOutDuplicate("aeiouaeiouaeiou"));
 	}
 }

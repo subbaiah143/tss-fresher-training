@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -229,12 +230,11 @@ public class StringUtil {
 			throw new Exception("Data cannot be null");
 		}
 		data = data.toLowerCase();
-		int l = data.length();
 		String vowels = "aeiou";
 		String s = "";
-		char ch;
-		for (int i = 0; i < l; i++) {
-			ch = data.charAt(i);
+
+		for (int i = 0; i < data.length(); i++) {
+			char ch = data.charAt(i);
 			if (vowels.contains(Character.toString(ch)) && !(s.contains(Character.toString(ch)))) {
 				s = s + ch;
 			}
@@ -398,7 +398,7 @@ public class StringUtil {
 	 * @throws Exception
 	 * @author venkata subbaiah
 	 * @since 2021-10-21
-	 */
+	 */ 
 	public static int wordsCount(String data) throws Exception {
 		if (data == null) {
 			throw new Exception("Data cannot be null");
@@ -486,13 +486,216 @@ public class StringUtil {
 		if (data == null) {
 			throw new Exception("Data cannot be null");
 		}
-		String[] s = data.split(" ");
-		List<String>list=new ArrayList<>();
-		for (String word : s) {
-			if (Pattern.matches("\\{\\{.*\\}\\}", word)) {
-				list.add(word.substring(1, word.length() - 1)) ;
+		int start = 0;
+		int end = 0;
+		boolean flag = true;
+		List<String> list = new ArrayList<>();
+		while (flag) {
+			start = data.indexOf("{{", start);
+			end = data.indexOf("}}", end);
+			list.add(data.substring(start + 2, end));
+			start = end;
+			end += 2;
+			if (data.indexOf("{{", start) < 0) {
+				break;
+			}
+		}
+		return list;
+	}
+	
+	/**
+	 * Checking given string is integer or not
+	 * @param data
+	 * @return boolean
+	 * @throws Exception
+	 * @author venkata subbaiah
+	 * @since 2021-11-01
+	 */
+	public static boolean isNumber(String data) throws Exception {
+		if (data == null)
+			throw new Exception("Data cannot be null");
+		for (int i = 0; i < data.length(); i++)
+			if (Character.isDigit(data.charAt(i)) == false)
+				return false;
+		return true;
+	}
+	
+	/**
+	 * To validate given password is valid or not.
+	 * Password length should be in the range of 8 to 12 characters.
+	 * Standard password should contain (//?.,!_-~$%+=) only these special characters
+	 * @param data
+	 * @return boolean
+	 * @throws Exception
+	 * @author venkata subbaiah                                                  
+	 * @since 2021-11-01
+	 */
+	public static boolean isValidPassword(String data) throws Exception {
+		if (data == null) {
+			throw new Exception("Password cannot be null");
+		}
+		Pattern par = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\\$\\%\\!\\.\\,\\-\\_\\~\\+\\=])(?=\\S+$).{8,12}$");
+		Matcher mat = par.matcher(data);
+		return mat.matches();
+	}
+	
+	/**
+	 * To generate OTPs by the given number of int values
+	 * @param num
+	 * @return char[]
+	 * @author venkata subbaiah
+	 * @throws Exception 
+	 * @since 2021-11-01
+	 */
+	public static int[] otpGenerator(int num) throws Exception {
+		if (num < 0) {
+			throw new Exception("Num value should be greater than 0");
+		}
+		int[] arr = new int[num];
+		int min = 1000, max = 9999;
+		Random random = new Random();
+		for (int i = 0; i < num; i++) {
+			arr[i] = random.nextInt((max - min) + 1) + min;
+		}
+		return arr;
+	}
+	
+	/**
+	 * Count the characters and sum of digits in the given sting ,
+	 * divided the sum of digits with the character count and print final output
+	 * example : String = "123jcv";  
+	 *           character count=3
+	 *           sum of digits  =6
+	 *           output=sum of digits/character count=6/3=2
+	 * @param data
+	 * @return double
+	 * @throws Exception
+	 * @author venkata subbaiah
+	 * @since 2021-11-02
+	 */
+	public static double countTheCharactersAndSumOfDigits(String data) throws Exception {
+		if (data == null) {
+			throw new Exception("Data cannot be null");
+		}
+		int sumOfDigits = 0;
+		int charCount = 0;
+		for (int i = 0; i < data.length(); i++) {
+			if (Character.isAlphabetic(data.charAt(i))) {
+				charCount++;
+			} else if (Character.isDigit(data.charAt(i))) {
+				sumOfDigits = sumOfDigits + Integer.parseInt(String.valueOf(data.charAt(i)));
+			}
+		}
+		double output=sumOfDigits/charCount;
+		return  output;
+	}
+	
+	/**
+	 * Program to convert the given string into camelCase.
+	 * @param data
+	 * @return string
+	 * @throws Exception
+	 * @author venkata subbaiah
+	 * @since 2021-11-05
+	 */
+	public static String toCamelCase(String data) throws Exception {
+		String output = toPascalCase(data);
+		return output.substring(0, 1).toLowerCase() + output.substring(1);
+	}
+	
+	/**
+	 * Program to convert the given String into PascalCase.
+	 * @param data
+	 * @return String
+	 * @throws Exception
+	 * @author venkata subbaiah
+	 * @since 2021-11-05
+	 */
+	public static String toPascalCase(String data) throws Exception {
+		if (data == null || data.trim().equals("")) {
+			throw new Exception("Data cannot be blank");
+		}
+		String words[] = data.trim().split("\\s+");
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < words.length; i++) {
+			char letter = words[i].charAt(0);
+			if (!Character.isUpperCase(letter)) {
+				sb.append(Character.toUpperCase(letter)).append(words[i].substring(1));
+			} else {
+				sb.append(words[i].substring(0));
+			}
+		}
+		return  sb.toString().trim();
+	}
+    
+	/**
+	 * Program to convert the given String into ToggleCase
+	 * @param data
+	 * @return string
+	 * @throws Exception
+	 * @author venkata subbaiah
+	 * @since 2021-11-05
+	 */
+	public static String toToggleCase(String data) throws Exception {
+		if (data == null || data.trim().equals("")) {
+			throw new Exception("Data cannot be blank");
+		}
+		String words[] = data.trim().split("\\s+");
+		StringBuilder sb = new StringBuilder();
+		for (String word : words) {
+			char letter = word.charAt(0);
+			if (!Character.isLowerCase(letter)) {
+				sb.append(Character.toLowerCase(letter)).append(word.substring(1).toUpperCase() + " ");
+			} else
+				sb.append(word.substring(0, 1)).append(word.substring(1).toUpperCase() + " ");
+		}
+		return sb.toString().trim();
+	}
+	/**
+	 * Write a method which takes three parameters first shoud have source string ,
+	 * second should have target string and third should have replaced string ,return string 
+	 * @param source
+	 * @param target
+	 * @param replaced
+	 * @return String
+	 * @author venkata subbaiah
+	 * @throws Exception 
+	 * @since 2021-11-08
+	 */
+	public static String replacedCharSequences(String source, String target, String replaced) throws Exception {
+		if (source == null || target == null || replaced == null) {
+			throw new Exception("Data cannot be blank");
+		}
+		for (;;) {
+			int i = source.indexOf(target);
+			if (i == -1) {
+				break;
+			}
+			source = source.substring(0, i) + replaced + source.substring(i + target.length());
+		}
+		return source;
+	}
+
+	/**
+	 * To print the indexes of the given character
+	 * @param data
+	 * @param value
+	 * @return string
+	 * @author venkata subbaiah
+	 * @throws Exception 
+	 * @since 2021-11-18
+	 */
+	public static List<Integer> retriveIndexes(String data, char value) throws Exception {
+		if (data == null) {
+			throw new Exception("Data cannot be null");
+		}
+		List<Integer> list = new ArrayList<>();
+		for (int i = 0; i < data.length() - 1; i++) {
+			if (data.charAt(i) == value) {
+				list.add(i);
 			}
 		}
 		return list;
 	}
 }
+
